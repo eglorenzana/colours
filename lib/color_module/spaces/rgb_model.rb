@@ -1,7 +1,3 @@
-# To change this license header, choose License Headers in Project Properties.
-# To change this template file, choose Tools | Templates
-# and open the template in the editor.
-
 module ColorModule
   module Spaces  
     class RGBModel < ColorModel
@@ -14,11 +10,12 @@ module ColorModule
         super(_params)
       end
       def assign_components(*values)
-        _values =  values.flatten
-        @components.each_with_index do |cc, index|
-          cc.value= _values[index].round
+        values =  values.flatten.first(@components.size)
+        values.each_with_index do |v, index|
+          @components[index].value= v.to_i
         end			
-      end		
+      end      
+      
     end
   end
 end

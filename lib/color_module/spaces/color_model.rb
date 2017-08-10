@@ -1,12 +1,8 @@
-# To change this license header, choose License Headers in Project Properties.
-# To change this template file, choose Tools | Templates
-# and open the template in the editor.
-
 module ColorModule
   module Spaces
     class ColorModelError < StandardError
       def initialize(params={})
-        default_params = {msg: 'Range value error in ColorModel'}.merge(params)
+        default_params = {msg: 'Size of components and valid_ranges must be same'}.merge(params)
         super(default_params.fetch(:msg, ''))
       end
     end  
@@ -31,13 +27,13 @@ module ColorModule
         rescue KeyError => e
           raise ColorModelError.new(msg: 'Argument error, you must define name, components and valid_ranges for each one')
         end
-        @model_converter = params[:model_converter] || ColorModelConverter
+        @model_converter = params[:model_converter] || Converters::ColorModelConverter
       end
 
       def assign_components(*values)
-        _values =  values.flatten
-        @components.each_with_index do |cc, index|
-          cc.value= _values[index]
+        values =  values.flatten.first(@components.size)
+        values.each_with_index do |v, index|
+          @components[index].value= v
         end			
       end
 

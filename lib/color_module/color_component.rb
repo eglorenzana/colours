@@ -1,7 +1,3 @@
-# To change this license header, choose License Headers in Project Properties.
-# To change this template file, choose Tools | Templates
-# and open the template in the editor.
-
 module ColorModule
   class ColorComponent
     attr_reader :value, :name
@@ -19,7 +15,7 @@ module ColorModule
     end
 
     def value=(value)
-      _value = value.to_f
+      _value = value
       validate(_value) ?  (@value =  _value) :  (raise ColorComponentError.new(object: @name, value: _value))
     end
 
