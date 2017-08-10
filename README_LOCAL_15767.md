@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # README
 
 This README would normally document whatever steps are necessary to get the
@@ -23,7 +22,3 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
-=======
-# colours
-Manage color spaces, perform comparation between colours and physical mixtures recipes
->>>>>>> 52b762eb6fea6a8075363831019ef877d1bcc63a
