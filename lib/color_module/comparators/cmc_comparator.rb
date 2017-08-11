@@ -26,7 +26,7 @@ module ColorModule
         _F = Math.sqrt( _C1**4 / (_C1**4 + 1900) )
         sH = sC*( _F*_T + 1 - _F)
 
-        dE = Math.sqrt( (dL/(l*sL))**2 + (dC/(c*sC))**2 + (dH/sH)**2 )
+        dE = Math.sqrt( (dL/(l*sL))**2 + (dC/(c*sC))**2 + (dH/sH)**2 ).round(DECIMAL_DIGITS)
         Result.new(dE, dL, da, db)
       end
 
@@ -42,6 +42,8 @@ module ColorModule
 
       private
       class Result
+        attr_reader :dE
+        alias :value :dE
         def initialize(dE, dL, da, db)
           @dE =  dE
           @dL =  dL

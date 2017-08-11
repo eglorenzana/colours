@@ -12,7 +12,7 @@ describe ColorModule::Color do
     
     context 'create a new Lab Color' do 
       it 'returns a Color with ColorModel LabModel' do
-        c =  ColorModule::Color.new(:Lab)
+        c =  ColorModule::Color.new(:LAB)
         expect(c).to be_an_instance_of(ColorModule::Color)
         expect(c.model).to be_an_instance_of(ColorModule::Spaces::LABModel)
       end
