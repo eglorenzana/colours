@@ -1,6 +1,6 @@
 module ColorModule
   module Converters
-    class LabModelConverter < ColorModelConverter
+    class LABModelConverter < ColorModelConverter
       def to_lab
         @model
       end

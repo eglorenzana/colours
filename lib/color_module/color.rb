@@ -25,7 +25,12 @@ module ColorModule
     end
 
     def convert_to(model_to)
-      @model.convert_to(model_to)
+      new_model = @model.convert_to(model_to)
+      Color.new(new_model.model_name, *(new_model.component_values))
+    end
+    
+    def eql?(another_color)
+      model.eql?(another_color.model)
     end
     
     def +(color)

@@ -7,6 +7,7 @@ module ColorModule
       end
     end  
     class ColorModel
+      NUM_DEC_DIGITS =  4
       attr_reader :components
       attr_reader :model_name, :model_converter
 
@@ -33,7 +34,7 @@ module ColorModule
       def assign_components(*values)
         values =  values.flatten.first(@components.size)
         values.each_with_index do |v, index|
-          @components[index].value= v
+          @components[index].value= v.round(NUM_DEC_DIGITS)
         end			
       end
 
@@ -50,10 +51,16 @@ module ColorModule
       end
 
       def convert_to(model_to)
-        #puts "", "-"*30, "#{self.model_name}  #{self.resume}"
-        @model_converter.new(self).perform_conversion(model_to)
+         @model_converter.new(self).perform_conversion(model_to)
       end
-
+      
+      def eql?(another_model)
+        first_part = [:class, :model_name].all? { |method_name|
+          self.send(method_name) == another_model.send(method_name)
+        }
+        first_part  && ([@components, another_model.components].
+          transpose.all?{|self_c, another_c| self_c.eql?(another_c) })
+      end
     private
       def self.meta_component_accessors(model_as_self)
         #puts "model_as_self  #{model_as_self} "

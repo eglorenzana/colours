@@ -12,7 +12,7 @@ module ColorModule
       def assign_components(*values)
         values =  values.flatten.first(@components.size)
         values.each_with_index do |v, index|
-          @components[index].value= v.to_i
+          @components[index].value= v.round
         end			
       end      
       

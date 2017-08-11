@@ -10,7 +10,6 @@ module ColorModule
         c =  params[:c] || 1
         color1 =  first_color.convert_to(:lab)
         color2 =  second_color.convert_to(:lab)
-    #    puts "", "Reporting  l: #{l}    c: #{c}      ", color1.resume, color2.resume
         factor_conversion =  180/Math::PI   #obtener en grados
         dL =  color1.L - color2.L
         da =  color1.a - color2.a
@@ -26,10 +25,6 @@ module ColorModule
         _T = ((164..345).include?(_H)) ? ( 0.56 + (0.2*Math.cos((_H1 + 168)/factor_conversion)).abs ) : ( 0.36 + (0.4*Math.cos((_H1 + 35)/factor_conversion)).abs )
         _F = Math.sqrt( _C1**4 / (_C1**4 + 1900) )
         sH = sC*( _F*_T + 1 - _F)
-
-    #    puts "Reporting    C1: #{_C1}    C2: #{_C2}   dH: #{dH} "
-    #    puts "Reporting    H: #{_H}    H1: #{_H1}      ,   T: #{_T}    F  #{_F}  "
-    #    puts "Reporting    sL: #{sL}    ,  sC: #{sC}  , sH: #{sH}"
 
         dE = Math.sqrt( (dL/(l*sL))**2 + (dC/(c*sC))**2 + (dH/sH)**2 )
         Result.new(dE, dL, da, db)

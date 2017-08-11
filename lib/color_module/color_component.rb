@@ -1,5 +1,6 @@
 module ColorModule
   class ColorComponent
+    DELTA_VALUE = 0.01
     attr_reader :value, :name
     attr_reader :min_value
     attr_reader :max_value
@@ -21,6 +22,13 @@ module ColorModule
 
     def resume
       "#{@name}: #{@value}"
+    end
+    
+    def eql?(another_component)
+      first_part = [:class, :name].all? do |method_name|
+        self.send(method_name) == another_component.send(method_name)
+      end
+      first_part && ((value - another_component.value).abs <= DELTA_VALUE)
     end
 
   end

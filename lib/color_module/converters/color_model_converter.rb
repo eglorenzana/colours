@@ -9,8 +9,7 @@ module ColorModule
 
       def perform_conversion(model_to)
         if respond_to?("to_#{model_to}")
-          _model = send("to_#{model_to}")
-          Color.new(_model.model_name, *(_model.component_values))
+          send("to_#{model_to}")
         else 
           #puts "No se puede convertir a #{model_to}. Se desconoce el método."
           return nil
