@@ -30,20 +30,17 @@ RSpec.describe PhysicalColor, type: :model do
         expect(PhysicalColor.new).to respond_to(:tint_parts)
       end
       it 'responds to physical_color_parts' do 
-        expect(PhysicalColor.new).to respond_to(:physical_color_parts)
+        expect(PhysicalColor.new).to respond_to(:another_color_parts)
       end
     end
   end
   
   describe '.kind_of' do
-    context 'when includes Partitionable' do
+    context 'when extends Partitionable' do
       it 'is a Partitionable' do
         expect(PhysicalColor).to be_a(Partitionable)
       end
-      
-      it 'responds to parts' do 
-        expect(PhysicalColor.new).to respond_to(:parts)
-      end
     end
-  end  
+  end
+  
 end

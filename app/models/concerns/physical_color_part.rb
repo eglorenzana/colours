@@ -11,4 +11,8 @@ module PhysicalColorPart
     def object_part=(arg)
       raise NotImplementedError
     end
+    
+    def description
+      name
+    end
 end

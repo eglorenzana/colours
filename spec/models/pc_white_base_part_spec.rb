@@ -18,12 +18,4 @@ RSpec.describe PcWhiteBasePart, type: :model do
       end
     end
   end
-  
-  describe '#kind_of' do
-    context 'when includes PhysicalColorPart' do
-      it 'is a PhysicalColorPart' do
-        expect(PcWhiteBasePart.new).to be_a(PhysicalColorPart)
-      end
-    end
-  end
 end

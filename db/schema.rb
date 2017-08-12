@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170811033027) do
+ActiveRecord::Schema.define(version: 20170811174340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20170811033027) do
     t.integer "percentage", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "another_color_id"
+    t.index ["another_color_id"], name: "index_pc_parts_on_another_color_id"
     t.index ["physical_color_id"], name: "index_pc_parts_on_physical_color_id"
   end
 
@@ -91,6 +93,7 @@ ActiveRecord::Schema.define(version: 20170811033027) do
   end
 
   add_foreign_key "pc_parts", "physical_colors"
+  add_foreign_key "pc_parts", "physical_colors", column: "another_color_id"
   add_foreign_key "pc_pigment_parts", "physical_colors"
   add_foreign_key "pc_pigment_parts", "pigments"
   add_foreign_key "pc_tint_parts", "physical_colors"
