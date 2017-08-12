@@ -1,6 +1,7 @@
 module ColorModule
   module Comparators
     class CMCComparator
+      @@comparator_name =  :cmc
       def initialize(l=2, c=1)
         @l =  l 
         @c = c 
@@ -27,7 +28,7 @@ module ColorModule
         sH = sC*( _F*_T + 1 - _F)
 
         dE = Math.sqrt( (dL/(l*sL))**2 + (dC/(c*sC))**2 + (dH/sH)**2 ).round(DECIMAL_DIGITS)
-        Result.new(dE, dL, da, db)
+        Result.new(dE, dL, da, db, l, c)
       end
 
 
@@ -44,19 +45,28 @@ module ColorModule
       class Result
         attr_reader :dE
         alias :value :dE
-        def initialize(dE, dL, da, db)
+        def initialize(dE, dL, da, db, l, c)
           @dE =  dE
-          @dL =  dL
-          @da =  da
-          @db =  db
+          @dL =  dL.round(2*DECIMAL_DIGITS)
+          @da =  da.round(2*DECIMAL_DIGITS)
+          @db =  db.round(2*DECIMAL_DIGITS)
+          @l =  l
+          @c = c
         end
         def resume
           puts "", "Results of comparation:"
-          puts " %cEcmc:  %f " %[916, @dE]
+          puts " %cEcmc (#{@l}:#{@c}):  %f " %[916, @dE]
           puts " %<delta>cL   :  %<dl>f\n %<delta>ca   :  %<da>f\n %<delta>cb   : %<db>f" %{delta: 916, dl: @dL, da: @da, db: @db}
           puts ""
         end  
       end  
+    end
+    class ColorComparatorError < StandardError
+      def initialize(params={})
+        default_params = {msg: 'The Comparator is not found: '}.merge(params)
+        data_msg = params.fetch(:name, '')
+        super(default_params.fetch(:msg, '') + data_msg)
+      end
     end
   end
 end

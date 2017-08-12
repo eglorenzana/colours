@@ -1,5 +1,10 @@
 module ColorModule
   module Spaces
+    class ColorSpaceNotFound < StandardError
+      def initialize(space)
+        super("The color space #{space} is not found. Try other space.")
+      end
+    end  
     class ColorModelError < StandardError
       def initialize(params={})
         default_params = {msg: 'Size of components and valid_ranges must be same'}.merge(params)
@@ -32,7 +37,7 @@ module ColorModule
       end
 
       def assign_components(*values)
-        values =  values.flatten.first(@components.size)
+        values =  values.flatten.first(@components.size).compact
         values.each_with_index do |v, index|
           @components[index].value= v.round(NUM_DEC_DIGITS)
         end			

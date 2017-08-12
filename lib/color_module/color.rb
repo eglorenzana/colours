@@ -1,4 +1,4 @@
-module ColorModule
+module ColorModule 
   class Color
     include Comparators::ColorComparable
     include Mixers::ColorMixable

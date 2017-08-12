@@ -9,6 +9,13 @@ RSpec.describe PhysicalColor, type: :model do
         expect(pc.save).to be_falsy
       end
     end
+    context 'when has all components but some invalid' do
+      pc =  PhysicalColor.new(component_l: -350, component_a: 400, component_b: 320 )
+      it 'is invalid' do
+        expect(pc.invalid?).to be_truthy
+        expect(pc.save).to be_falsy
+      end
+    end
     context 'when has all components valid' do
       pc =  PhysicalColor.new(component_l: 50, component_a: 40, component_b: 30 )
       it 'saves the PhysicalColor' do
