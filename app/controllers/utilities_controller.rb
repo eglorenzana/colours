@@ -14,12 +14,12 @@ class UtilitiesController < ApplicationController
       @to_space  = params.fetch('to_space')
       @color_components =  params.fetch('components')
       @response= ColorModule::Util.perform_conversion(@from_space, @to_space, @color_components)
-      @status = 200
-    rescue KeyError => e
-      @status = 400
-      #pass info about the not found key
+      @status = :ok
+    rescue KeyError, ColorModule::ColorComponentError => e
+      @status = :bad_request
+      @response = {message: e.to_s}
     rescue ColorModule::Spaces::ColorSpaceNotFound => e
-      @status = 404
+      @status = :not_found
       @response = {message: e.to_s}
     end    
     render json: @response, status: @status
@@ -29,17 +29,18 @@ class UtilitiesController < ApplicationController
   def compare_colors
     begin
       @comparator = params.fetch('comparator')
-      @space  = compare_color_params.fetch('space')
-      @color1 =  compare_color_params.fetch('color1').permit!.to_hash
-      @color2 =  compare_color_params.fetch('color2').permit!.to_hash
-      options =  compare_color_params.fetch('options', {}).permit!.to_hash
+      @space  = params.fetch('space')
+      @color1 =  params.fetch('color1')
+      @color2 =  params.fetch('color2')
+      options =  params.fetch('options', {}).permit!.to_hash
       @response= ColorModule::Util.perform_comparation(@comparator, @space, @color1, @color2, options)
-      @status = 200
-    rescue KeyError => e
-      @status = 400
-      #pass info about the not found KEY
-    rescue ColorModule::Comparators::ColorComparatorError => e
-      @status = 404
+      @status = :ok
+    rescue KeyError, ColorModule::ColorComponentError => e
+      @status = :bad_request
+      @response = {error_message: e.to_s}
+    rescue ColorModule::Spaces::ColorSpaceNotFound, 
+        ColorModule::Comparators::ColorComparatorError => e
+      @status = :not_found
       @response = {error_message: e.to_s}
     end    
     render json: @response, status: @status
@@ -47,7 +48,5 @@ class UtilitiesController < ApplicationController
 
   
   private
-  def compare_color_params
-    params.require(:color).permit!
-  end
+
 end

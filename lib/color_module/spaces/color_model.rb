@@ -1,16 +1,5 @@
 module ColorModule
-  module Spaces
-    class ColorSpaceNotFound < StandardError
-      def initialize(space)
-        super("The color space #{space} is not found. Try other space.")
-      end
-    end  
-    class ColorModelError < StandardError
-      def initialize(params={})
-        default_params = {msg: 'Size of components and valid_ranges must be same'}.merge(params)
-        super(default_params.fetch(:msg, ''))
-      end
-    end  
+  module Spaces  
     class ColorModel
       NUM_DEC_DIGITS =  4
       attr_reader :components

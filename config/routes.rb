@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :white_bases
+  resources :tints
+  resources :pigments
   resources :mixtures
   resources :physical_colors , as: :colors do
     

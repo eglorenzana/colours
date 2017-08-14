@@ -30,10 +30,21 @@ module ColorModule
     end
     
     def self.get_components(from_space, components)
+
       model = ColorModule::Spaces::ColorModelFactory.get_model(from_space)
-      c = components.is_a?(Array) ? components.first(model.component_names.size) :
-        (model.component_names.map{|n| components[n.downcase.to_s]})
-      c.map{|v| v.to_f}
+      c = []
+      case (components)
+      when Array then
+        c = components.first(model.component_names.size)
+      when Hash, ActionController::Parameters then
+        c = model.component_names.map{|n| components[n.downcase.to_s]}
+      else
+        raise ColorModule::ColorComponentError.new(msg: "Components given are not valid: #{components}")
+      end
+      c.compact!
+      c.size == model.components.size ? c.map{|v| v.to_f} :
+        (raise ColorModule::ColorComponentError.new(msg:
+            "Wrong number of components: given #{c.size}, but was expected #{model.component_names.size}"))
     end
     
     def self.parse_data_from_color_converted(color1, color2)
@@ -43,7 +54,7 @@ module ColorModule
     def self.perform_conversion(from_space, to_space, components)
       color_space?(from_space)
       color_space?(to_space)
-      processed_components = get_components(from_space, components)    
+      processed_components = get_components(from_space, components)
       color = ColorModule::Color.new(from_space, *processed_components )
       color_converted = color.convert_to(to_space)
       parse_data_from_color_converted(color, color_converted)      
@@ -55,7 +66,6 @@ module ColorModule
         (raise ColorModule::Comparators::ColorComparatorError.new(name: comparator_name))
       comp_color1 = get_components(space, color1_data)    
       comp_color2 = get_components(space, color2_data)
-      
       color1 = ColorModule::Color.new(space, *comp_color1)
       color2 = ColorModule::Color.new(space, *comp_color2)
       comparator.compare(color1, color2, options)

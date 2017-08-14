@@ -8,8 +8,8 @@ describe ColorModule::Util do
     space= 'rgb'
     context 'when pass a hash' do
       it 'returns a array with the component values' do
-        r = ColorModule::Util.get_components(space,comp_h)
-        expect(r).to eq(comp_a)
+        r = ColorModule::Util.get_components(space,comp_h.stringify_keys)
+        expect(r).to match_array(comp_a)
       end
     end
     context 'when pass an array' do
