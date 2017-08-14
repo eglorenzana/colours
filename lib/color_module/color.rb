@@ -1,5 +1,6 @@
 module ColorModule 
   class Color
+    alias :read_attribute_for_serialization :send
     include Comparators::ColorComparable
     include Mixers::ColorMixable
     attr_reader :model
@@ -7,9 +8,14 @@ module ColorModule
       @model =  Spaces::ColorModelFactory.get_model(model)
       @model.assign_components(*values)
     end
-
+    def active_model_serializer
+        ColorModule::Serializers::ColorSerializer
+    end   
     def components
       @model.components
+    end
+    def components_to_hash
+      @model.components_to_hash
     end
 
     def model_name

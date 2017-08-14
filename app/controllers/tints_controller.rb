@@ -20,7 +20,7 @@ class TintsController < ApplicationController
     if @tint.save
       render json: @tint, status: :created, location: @tint
     else
-      render json: @tint.errors, status: :unprocessable_entity
+      render json: {errors: @tint.errors}, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +29,7 @@ class TintsController < ApplicationController
     if @tint.update(tint_params)
       render json: @tint
     else
-      render json: @tint.errors, status: :unprocessable_entity
+      render json: {errors: @tint.errors}, status: :unprocessable_entity
     end
   end
 

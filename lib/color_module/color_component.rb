@@ -1,5 +1,6 @@
 module ColorModule
   class ColorComponent
+    alias :read_attribute_for_serialization :send
     DELTA_VALUE = 0.01
     attr_reader :value, :name
     attr_reader :min_value
@@ -10,6 +11,9 @@ module ColorModule
       @max_value = limit.flatten.max
       @value = @min_value
     end
+    def active_model_serializer
+        ColorModule::Serializers::ColorComponentSerializer
+    end    
 
     def validate(value)
       (@min_value..@max_value).include?(value)
@@ -22,6 +26,10 @@ module ColorModule
 
     def resume
       "#{@name}: #{@value}"
+    end
+    
+    def to_h
+      {@name => @value}
     end
     
     def eql?(another_component)

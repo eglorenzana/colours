@@ -37,7 +37,7 @@ module ColorModule
       when Array then
         c = components.first(model.component_names.size)
       when Hash, ActionController::Parameters then
-        c = model.component_names.map{|n| components[n.downcase.to_s]}
+        c = model.component_names.map{|n| components[n.downcase.to_s] || components[n.to_s]}
       else
         raise ColorModule::ColorComponentError.new(msg: "Components given are not valid: #{components}")
       end
@@ -48,7 +48,9 @@ module ColorModule
     end
     
     def self.parse_data_from_color_converted(color1, color2)
-      {color: color2, from_color: color1}
+      #{color: color2, from_color: color1}
+      color2.instance_variable_set('@from_color', color1)
+      color2
     end
         
     def self.perform_conversion(from_space, to_space, components)
@@ -68,7 +70,7 @@ module ColorModule
       comp_color2 = get_components(space, color2_data)
       color1 = ColorModule::Color.new(space, *comp_color1)
       color2 = ColorModule::Color.new(space, *comp_color2)
-      comparator.compare(color1, color2, options)
+      color1.compare_with(color2, options.merge(comparator: comparator))
     end
   end
 end

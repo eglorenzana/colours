@@ -8,13 +8,18 @@ module ColorModule
         ComparatorResult.new(_comparator.compare(self, second_color, params))
       end
       class ComparatorResult
-        attr_reader :result
+        alias :read_attribute_for_serialization :send
+        attr_reader :result, :value
         def initialize(result)
           @result = result
+          @value =  @result.value
         end
         
-        def value
-          @result.value
+        def color1
+          @result.color1
+        end
+        def color2
+          @result.color2
         end
         
         def method_missing(method, *args)

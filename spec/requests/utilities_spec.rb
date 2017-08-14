@@ -51,6 +51,9 @@ RSpec.describe "Utilities", type: :request do
           expect(response).to have_http_status(:bad_request)
         end         
       end
+      context 'when request with long option' do
+        skip
+      end
     end
 
     context 'given unknown spaces' do
@@ -117,6 +120,9 @@ RSpec.describe "Utilities", type: :request do
           expect(response).to have_http_status(:bad_request)
         end         
       end      
+      context 'when request with long option' do
+        skip
+      end      
     
       context 'when given unknown spaces' do
         it 'return :not_found' do
@@ -126,7 +132,6 @@ RSpec.describe "Utilities", type: :request do
         end
       end      
     end
-
     context 'given an unknown comparator' do
       it 'return :not_found' do 
         url = url_for(params.merge(comparator: :abcd))     

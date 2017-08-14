@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :tints
   resources :pigments
   resources :mixtures
-  resources :physical_colors , as: :colors do
+  resources :colors , controller: :physical_colors do
     
   end
   resources :utilities, only: [:index] do

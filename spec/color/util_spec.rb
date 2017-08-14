@@ -36,8 +36,8 @@ describe ColorModule::Util do
     context 'when given the correct arguments' do
       it 'return the result of compare' do
         conversion = ColorModule::Util.perform_conversion(space1, space2, color)
-        expect(conversion[:color]).to eql(color_result)
-        expect(conversion[:color].model_name.downcase).to eq(space2.to_sym)
+        expect(conversion).to eql(color_result)
+        expect(conversion.model_name.downcase).to eq(space2.to_sym)
       end
     end
     

@@ -20,7 +20,7 @@ class WhiteBasesController < ApplicationController
     if @white_base.save
       render json: @white_base, status: :created, location: @white_base
     else
-      render json: @white_base.errors, status: :unprocessable_entity
+      render json: {errors: @white_base.errors}, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +29,7 @@ class WhiteBasesController < ApplicationController
     if @white_base.update(white_base_params)
       render json: @white_base
     else
-      render json: @white_base.errors, status: :unprocessable_entity
+      render json: {errors: @white_base.errors}, status: :unprocessable_entity
     end
   end
 

@@ -20,7 +20,7 @@ class PigmentsController < ApplicationController
     if @pigment.save
       render json: @pigment, status: :created, location: @pigment
     else
-      render json: @pigment.errors, status: :unprocessable_entity
+      render json: {errors: @pigment.errors}, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +29,7 @@ class PigmentsController < ApplicationController
     if @pigment.update(pigment_params)
       render json: @pigment
     else
-      render json: @pigment.errors, status: :unprocessable_entity
+      render json: {errors: @pigment.errors}, status: :unprocessable_entity
     end
   end
 
