@@ -1,5 +1,5 @@
 class MixtureSerializer < ActiveModel::Serializer
-  attributes :name, :space, :parts
+  attributes :name, :space, :parts, :recipe
   
   def space
     c = ColorModule::Color.new(:LAB, object.components)
@@ -7,10 +7,18 @@ class MixtureSerializer < ActiveModel::Serializer
   end
   
   def parts
-    object.recipe.map do |part, percentage|
-      s =  part.active_model_serializer
-      s.new(part, instance_options)
+    info  = object.part_managers.map do |manager|
+      options_for_parts = {skip_color_assoc: true}
+      data = manager.recipe.map do |part, percentage|
+        {percentage: percentage}.merge(part.class.active_model_serializer(mixture: true).new(part, options_for_parts).to_hash)
+      end  
+      {manager.object_assoc_name.to_s.pluralize => data} unless data.empty?
     end
+    info.compact.reduce(:merge)
+  end
+  
+  def recipe
+    object.recipe.to_string
   end
   
   def link

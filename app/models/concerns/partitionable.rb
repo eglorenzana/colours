@@ -160,10 +160,10 @@ module Partitionable
       end
     end
     
-    private
     def get_collection_assoc
       main_instance.send(assoc_name)
     end
+    private
            
     def get_obj(assoc_obj)
       assoc_obj.send(object_assoc_name)

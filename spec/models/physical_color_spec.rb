@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe PhysicalColor, type: :model do
   let(:klass){ PhysicalColor}
   let(:valid_attributes) {
-    {component_l: 50, component_a: 30, component_b: 40}
+    {component_l: 50, component_a: 30, component_b: 40, name: 'Some name'}
   }
   
   let(:invalid_attributes) {
