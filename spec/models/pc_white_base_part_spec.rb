@@ -10,7 +10,7 @@ RSpec.describe PcWhiteBasePart, type: :model do
       end
     end
     context 'when has valid percentage, base and physical_color' do
-      b = WhiteBase.create(name: 'Base X')      
+      b = WhiteBase.new(name: 'Base YYYZ')      
       pc =  PhysicalColor.new(component_l: 50, component_a: 40, component_b: 30 )
       pc_base =  PcWhiteBasePart.new(white_base: b, physical_color: pc, percentage: 50)
       it 'saves the PcWhiteBasePart' do
