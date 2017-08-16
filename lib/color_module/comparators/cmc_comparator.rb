@@ -9,7 +9,9 @@ module ColorModule
         @c = c
       end
 
-      def self.compare(first_color, second_color, params = {l: 2, c: 1})
+      def self.compare(first_color, second_color, params = { })
+        default_params = {l: 2, c: 1}
+        params.merge!(default_params)
         color1 = first_color.convert_to(:lab)
         color2 = second_color.convert_to(:lab)
         delta_e, data = cmc_calculate(color1, color2, params[:l], params[:c])
