@@ -1,3 +1,6 @@
+# colours
+Manage color spaces, perform comparation between colours and physical mixtures recipes
+
 # README
 
 This README would normally document whatever steps are necessary to get the
@@ -22,3 +25,5 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+

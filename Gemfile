@@ -37,5 +37,26 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+
+
+# ------------------------------------
+# Test toolkit
+# ------------------------------------
+group :development, :test do
+  # Use pry console for debugging and $ rails console
+  gem 'pry-rails'
+  # Pretty print Ruby objects with style
+  gem 'awesome_print'
+  # Default to Rspec for general testing
+  gem 'rspec-rails'
+  # Test coverage report
+  gem 'simplecov', :require => false
+  # Schematics for Ruby
+  gem 'factory_girl_rails'
+  # Ensure a clean state for testing
+  gem 'database_cleaner', :require => false
+end
