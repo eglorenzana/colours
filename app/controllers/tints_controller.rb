@@ -1,5 +1,6 @@
+# CRUD operations on Tint resources
 class TintsController < ApplicationController
-  before_action :set_tint, only: [:show, :update, :destroy]
+  before_action :set_tint, only: %i[show update destroy]
 
   # GET /tints
   def index
@@ -20,7 +21,7 @@ class TintsController < ApplicationController
     if @tint.save
       render json: @tint, status: :created, location: @tint
     else
-      render json: {errors: @tint.errors}, status: :unprocessable_entity
+      render json: { errors: @tint.errors }, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +30,7 @@ class TintsController < ApplicationController
     if @tint.update(tint_params)
       render json: @tint
     else
-      render json: {errors: @tint.errors}, status: :unprocessable_entity
+      render json: { errors: @tint.errors }, status: :unprocessable_entity
     end
   end
 
@@ -39,13 +40,14 @@ class TintsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_tint
-      @tint = Tint.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def tint_params
-      params.fetch(:tint, {}).permit(:name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_tint
+    @tint = Tint.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def tint_params
+    params.fetch(:tint, {}).permit(:name)
+  end
 end

@@ -1,5 +1,8 @@
+# Mixture operations for colors
+# It performs mixtures of WhiteBase, Pigment, Tint, PhysicalColor resources
+# by defining percentage of each resources to form the Mixture
 class MixturesController < ApplicationController
-  before_action :set_physical_color, only: [:show, :update, :destroy]
+  before_action :set_physical_color, only: %i[show update destroy]
 
   # GET /physical_colors
   def index
@@ -39,13 +42,14 @@ class MixturesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_physical_color
-      @physical_color = PhysicalColor.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def physical_color_params
-      params.fetch(:physical_color, {})
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_physical_color
+    @physical_color = PhysicalColor.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def physical_color_params
+    params.fetch(:physical_color, {})
+  end
 end

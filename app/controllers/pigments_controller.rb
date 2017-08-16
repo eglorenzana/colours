@@ -1,5 +1,6 @@
+# CRUD operations on Pigment resources
 class PigmentsController < ApplicationController
-  before_action :set_pigment, only: [:show, :update, :destroy]
+  before_action :set_pigment, only: %i[show update destroy]
 
   # GET /pigments
   def index
@@ -20,7 +21,7 @@ class PigmentsController < ApplicationController
     if @pigment.save
       render json: @pigment, status: :created, location: @pigment
     else
-      render json: {errors: @pigment.errors}, status: :unprocessable_entity
+      render json: { errors: @pigment.errors }, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +30,7 @@ class PigmentsController < ApplicationController
     if @pigment.update(pigment_params)
       render json: @pigment
     else
-      render json: {errors: @pigment.errors}, status: :unprocessable_entity
+      render json: { errors: @pigment.errors }, status: :unprocessable_entity
     end
   end
 
@@ -39,13 +40,14 @@ class PigmentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_pigment
-      @pigment = Pigment.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def pigment_params
-      params.fetch(:pigment, {}).permit(:name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_pigment
+    @pigment = Pigment.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def pigment_params
+    params.fetch(:pigment, {}).permit(:name)
+  end
 end
