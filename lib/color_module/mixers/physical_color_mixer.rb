@@ -3,21 +3,24 @@
 # and open the template in the editor.
 module ColorModule
   module Mixers
+    # Mix colors
     class PhysicalColorMixer
       def initialize(first_color, second_color)
         @first_color = first_color
         @second_color = second_color
       end
-      def self.mix(first_color, second_color, params={})
-        p1 =  params[:p1]
-        p2 = params[:p2]
+
+      def self.mix(first_color, _second_color, params = {})
+        _p1 = params[:p1]
+        _p2 = params[:p2]
         first_color
       end
+
       def mix(p1, p2)
         self.class.mix(@first_color, @second_color, p1: p1, p2: p2)
-      end  
+      end
 
-      def self.mix_multiple(colors=[], proportions=[])
+      def self.mix_multiple(_colors = [], _proportions = [])
         raise NotImplementedError
       end
     end

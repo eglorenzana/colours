@@ -25,7 +25,7 @@ module ColorModule
         end
         @model_converter = params[:model_converter] || Converters::ColorModelConverter
       end
-      
+
       def active_model_serializer
           ColorModule::Serializers::ColorModelSerializer
       end
@@ -67,7 +67,6 @@ module ColorModule
 
     private
       def self.meta_component_accessors(model_as_self)
-        #puts "model_as_self  #{model_as_self} "
           model_as_self.class.class_eval do
             model_as_self.components.each do |cc|
             define_method("#{cc.name}") do
