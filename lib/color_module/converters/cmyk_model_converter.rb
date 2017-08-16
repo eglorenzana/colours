@@ -1,5 +1,6 @@
 module ColorModule
   module Converters
+    # Implements the conversion methods from CMYK space for other spaces
     class CMYKModelConverter < ColorModelConverter
       def to_cmyk
         @model

@@ -1,6 +1,6 @@
-#expose the interface the parts of a PhysicalColor should implement
-module PhysicalColorPart   
-    def description
-      name
-    end
+# Expose the interface for a part of a PhysicalColor
+module PhysicalColorPart
+  def description
+    name
+  end
 end

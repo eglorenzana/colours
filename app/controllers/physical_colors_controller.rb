@@ -1,5 +1,6 @@
+# CRUD operations on PhysicalColor resources, as colors path
 class PhysicalColorsController < ApplicationController
-  before_action :set_physical_color, only: [:show, :update, :destroy]
+  before_action :set_physical_color, only: %i[show update destroy]
 
   # GET /physical_colors
   def index
@@ -18,9 +19,11 @@ class PhysicalColorsController < ApplicationController
     @physical_color = PhysicalColor.new(physical_color_params)
 
     if @physical_color.save
-      render json: @physical_color, status: :created, location: color_url(@physical_color)
+      render json: @physical_color, status: :created,
+             location: color_url(@physical_color)
     else
-      render json: {errors: @physical_color.errors}, status: :unprocessable_entity
+      render json: { errors: @physical_color.errors },
+             status: :unprocessable_entity
     end
   end
 
@@ -29,7 +32,8 @@ class PhysicalColorsController < ApplicationController
     if @physical_color.update(physical_color_params)
       render json: @physical_color
     else
-      render json: {errors: @physical_color.errors}, status: :unprocessable_entity
+      render json: { errors: @physical_color.errors },
+             status: :unprocessable_entity
     end
   end
 
@@ -39,13 +43,15 @@ class PhysicalColorsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_physical_color
-      @physical_color = PhysicalColor.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def physical_color_params
-      params.fetch(:physical_color, {}).permit(:component_l, :component_a, :component_b, :name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_physical_color
+    @physical_color = PhysicalColor.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def physical_color_params
+    params.fetch(:physical_color, {})
+          .permit(:component_l, :component_a, :component_b, :name)
+  end
 end

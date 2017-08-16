@@ -1,68 +1,95 @@
 module ColorModule
   module Comparators
+    # CIE delta E cmc comparator; for get the difference factor for two colors
     class CMCComparator
-      @@comparator_name =  :cmc
-      def initialize(l=2, c=1)
-        @l =  l 
-        @c = c 
-      end  
-      def self.compare(first_color, second_color, params={})
-        l =  params[:l] || 2 
-        c =  params[:c] || 1
-        color1 =  first_color.convert_to(:lab)
-        color2 =  second_color.convert_to(:lab)
-        factor_conversion =  180/Math::PI   #obtener en grados
-        dL =  color1.L - color2.L
-        da =  color1.a - color2.a
-        db =  color1.b - color2.b
-        _C1 = Math.sqrt(color1.a**2 + color1.b**2)
-        _C2 = Math.sqrt(color2.a**2 + color2.b**2)
-        dC =  _C1 - _C2
-        dH = Math.sqrt(da**2 + db**2 - dC**2 )
-        sL = (color1.L < 16) ? ( 0.511) : (0.040975*color1.L / (1.0 + 0.01765*color1.L))
-        sC = (0.0638*_C1 / (1+0.0131*_C1)) + 0.638
-        _H = Math.atan2(color1.b, color1.a) * factor_conversion  #obtener en grados
-        _H1 = (_H >= 0) ? (_H) : (_H + 360)
-        _T = ((164..345).include?(_H)) ? ( 0.56 + (0.2*Math.cos((_H1 + 168)/factor_conversion)).abs ) : ( 0.36 + (0.4*Math.cos((_H1 + 35)/factor_conversion)).abs )
-        _F = Math.sqrt( _C1**4 / (_C1**4 + 1900) )
-        sH = sC*( _F*_T + 1 - _F)
+      @@comparator_name = :cmc
 
-        dE = Math.sqrt( (dL/(l*sL))**2 + (dC/(c*sC))**2 + (dH/sH)**2 ).round(DECIMAL_DIGITS)
-        params = {dL: dL, da: da, db: db, l: l, c: c}
-        Result.new(first_color, second_color, dE, params)
+      def initialize(l = 2, c = 1)
+        @l = l
+        @c = c
       end
 
+      def self.compare(first_color, second_color, params = { })
+        default_params = {l: 2, c: 1}
+        params.merge!(default_params)
+        color1 = first_color.convert_to(:lab)
+        color2 = second_color.convert_to(:lab)
+        delta_e, data = cmc_calculate(color1, color2, params[:l], params[:c])
+        Result.new(first_color, second_color, delta_e, params.merge(data))
+      end
+
+      def self.cmc_calculate(color1, color2, l, c)
+        dl, da, db = delta_for(color1, color2)
+        c1, _c2, delta_c = magnitude_and_delta(color1, color2)
+        delta_h = Math.sqrt(da**2 + db**2 - delta_c**2)
+        s_l, factor_t = factors_on_color1(color1)
+        s_c, factor_f = factor_on_c1(c1)
+        s_h = s_c * (factor_f * factor_t + 1 - factor_f)
+        delta_e = Math.sqrt((dl / (l * s_l))**2 + (delta_c / (c * s_c))**2 + (delta_h / s_h)**2).round(DECIMAL_DIGITS)
+        [delta_e, { dl: dl, da: da, db: db }]
+      end
+
+      def self.delta_for(color1, color2)
+        dl = color1.model.L - color2.model.L
+        da = color1.model.a - color2.model.a
+        db = color1.model.b - color2.model.b
+        [dl, da, db]
+      end
+
+      def self.magnitude_and_delta(color1, color2)
+        c1 = Math.sqrt(color1.model.a**2 + color1.model.b**2)
+        c2 = Math.sqrt(color2.model.a**2 + color2.model.b**2)
+        delta_c = c1 - c2
+        [c1, c2, delta_c]
+      end
+
+      def self.factor_on_c1(c1)
+        s_c = (0.0638 * c1 / (1 + 0.0131 * c1)) + 0.638
+        factor_f = Math.sqrt(c1**4 / (c1**4 + 1900))
+        [s_c, factor_f]
+      end
+
+      def self.factors_on_color1(color1)
+        factor_conversion = 180 / Math::PI # obtener en grados
+        factor_h = Math.atan2(color1.model.b, color1.model.a) * factor_conversion # obtener en grados
+        factor_h1 = factor_h >= 0 ? factor_h : (factor_h + 360)
+        s_l = color1.model.L < 16 ? 0.511 : (0.040975 * color1.model.L / (1.0 + 0.01765 * color1.model.L))
+        factor_t =
+          if (164..345).cover?(factor_h)
+            0.56 + (0.2 * Math.cos((factor_h1 + 168) / factor_conversion)).abs
+          else
+            0.36 + (0.4 * Math.cos((factor_h1 + 35) / factor_conversion)).abs
+          end
+        [s_l, factor_t]
+      end
 
       def compare(first_color, second_color)
         self.class.compare(first_color, second_color, l: @l, c: @c)
       end
 
-      def compare_multiple(*colors)
-        _results = Array.new
-        raise NotImplementedError
-      end
-
-      private
+      #  Result for CIE delta Ecmc comparator
       class Result
         attr_reader :value, :color1, :color2
-        alias :dE :value
-        def initialize(first_color, second_color, dE, params)
-          @color1, @color2 = first_color, second_color
-          @value =  dE
-          @dL =  params[:dL].round(2*DECIMAL_DIGITS)
-          @da =  params[:da].round(2*DECIMAL_DIGITS)
-          @db =  params[:db].round(2*DECIMAL_DIGITS)
-          @l =  params[:l]
+        alias de value
+        def initialize(first_color, second_color, delta_e, params)
+          @color1 = first_color
+          @color2 = second_color
+          @value = delta_e
+          @dl = params[:dl].round(2 * DECIMAL_DIGITS)
+          @da = params[:da].round(2 * DECIMAL_DIGITS)
+          @db = params[:db].round(2 * DECIMAL_DIGITS)
+          @l = params[:l]
           @c = params[:c]
         end
-        
+
         def resume
-          puts "", "Results of comparation:"
-          puts " %cEcmc (#{@l}:#{@c}):  %f " %[916, @dE]
-          puts " %<delta>cL   :  %<dl>f\n %<delta>ca   :  %<da>f\n %<delta>cb   : %<db>f" %{delta: 916, dl: @dL, da: @da, db: @db}
-          puts ""
-        end  
-      end  
+          puts '', 'Results of comparation:'
+          puts format(' %cEcmc (%d:%d):  %f ', 916, @l, @c, @delta_e)
+          puts format(" %<delta>cL   :  %<dl>f", delta: 916, dl: @dl)
+          puts format(" %<delta>ca   :  %<da>f", delta: 916, da: @da)
+          puts format(" %<delta>cb   :  %<db>f", delta: 916, db: @db)
+        end
+      end
     end
   end
 end

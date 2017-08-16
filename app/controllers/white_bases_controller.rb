@@ -1,5 +1,6 @@
+# CRUD operations on WhiteBase resources
 class WhiteBasesController < ApplicationController
-  before_action :set_white_base, only: [:show, :update, :destroy]
+  before_action :set_white_base, only: %i[show update destroy]
 
   # GET /white_bases
   def index
@@ -20,7 +21,7 @@ class WhiteBasesController < ApplicationController
     if @white_base.save
       render json: @white_base, status: :created, location: @white_base
     else
-      render json: {errors: @white_base.errors}, status: :unprocessable_entity
+      render json: { errors: @white_base.errors }, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +30,7 @@ class WhiteBasesController < ApplicationController
     if @white_base.update(white_base_params)
       render json: @white_base
     else
-      render json: {errors: @white_base.errors}, status: :unprocessable_entity
+      render json: { errors: @white_base.errors }, status: :unprocessable_entity
     end
   end
 
@@ -39,13 +40,14 @@ class WhiteBasesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_white_base
-      @white_base = WhiteBase.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def white_base_params
-      params.fetch(:white_base, {}).permit(:name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_white_base
+    @white_base = WhiteBase.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def white_base_params
+    params.fetch(:white_base, {}).permit(:name)
+  end
 end

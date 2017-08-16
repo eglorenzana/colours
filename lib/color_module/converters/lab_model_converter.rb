@@ -1,5 +1,6 @@
 module ColorModule
   module Converters
+    # Implements the conversion methods from LAB space for other spaces
     class LABModelConverter < ColorModelConverter
       def to_lab
         @model
