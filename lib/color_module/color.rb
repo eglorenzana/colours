@@ -10,6 +10,7 @@ module ColorModule
       @model =  Spaces::ColorModelFactory.get_model(model)
       @model.assign_components(*values)
     end
+    
     def active_model_serializer
         ColorModule::Serializers::ColorSerializer
     end
@@ -38,6 +39,7 @@ module ColorModule
         +(color)
       end
     end
+
 
     DELEGATE_METHODS.each do |name|
       define_method(name) do

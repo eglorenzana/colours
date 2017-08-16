@@ -1,11 +1,11 @@
 module ColorModule
-  module Spaces  
+  module Spaces
     class ColorModel
       alias :read_attribute_for_serialization :send
       NUM_DEC_DIGITS =  4
       attr_reader :components
       attr_reader :model_name, :model_converter
-      
+
       def initialize(params)
         @components = Array.new
         begin
@@ -19,23 +19,24 @@ module ColorModule
             ColorModel.meta_component_accessors(self)
           else
             raise ColorModelError.new
-          end          
+          end
         rescue KeyError => e
           raise ColorModelError.new(msg: 'Argument error, you must define name, components and valid_ranges for each one')
         end
         @model_converter = params[:model_converter] || Converters::ColorModelConverter
       end
+      
       def active_model_serializer
           ColorModule::Serializers::ColorModelSerializer
-      end    
+      end
 
       def assign_components(*values)
         values =  values.flatten.first(@components.size).compact
         values.each_with_index do |v, index|
           @components[index].value= v.round(NUM_DEC_DIGITS)
-        end			
+        end
       end
-        
+
       def component_names
         @components.map(&:name)
       end
@@ -47,7 +48,7 @@ module ColorModule
       def resume
         @model_name.to_s + '  with components  ' + @components.map(&:resume).join(", ")
       end
-      
+
       def components_to_hash
         @components.map(&:to_h).reduce(:merge)
       end
@@ -55,7 +56,7 @@ module ColorModule
       def convert_to(model_to)
          @model_converter.new(self).perform_conversion(model_to)
       end
-      
+
       def eql?(another_model)
         first_part = [:class, :model_name].all? { |method_name|
           self.send(method_name) == another_model.send(method_name)
@@ -63,7 +64,7 @@ module ColorModule
         first_part  && ([@components, another_model.components].
           transpose.all?{|self_c, another_c| self_c.eql?(another_c) })
       end
-      
+
     private
       def self.meta_component_accessors(model_as_self)
         #puts "model_as_self  #{model_as_self} "
@@ -71,10 +72,10 @@ module ColorModule
             model_as_self.components.each do |cc|
             define_method("#{cc.name}") do
               components.select{|c| c.name == cc.name}.first.value
-            end        
+            end
             define_method("#{cc.name}=") do |arg|
               components.select{|c| c.name == cc.name}.first.value= arg
-            end        
+            end
           end
         end
       end

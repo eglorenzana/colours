@@ -1,5 +1,6 @@
 module ColorModule
   module Converters
+    # Implements the conversion methods from RGB space for other spaces
     class RGBModelConverter < ColorModelConverter
       def to_rgb
         @model

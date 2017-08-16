@@ -22,24 +22,23 @@ module ColorModule
         dl, da, db = delta_for(color1, color2)
         c1, _c2, delta_c = magnitude_and_delta(color1, color2)
         delta_h = Math.sqrt(da**2 + db**2 - delta_c**2)
-        s_l = color1.L < 16 ? 0.511 : (0.040975 * color1.L / (1.0 + 0.01765 * color1.L))
+        s_l, factor_t = factors_on_color1(color1)
         s_c, factor_f = factor_on_c1(c1)
-        factor_t = factor_on_color1(color1)
         s_h = s_c * (factor_f * factor_t + 1 - factor_f)
         delta_e = Math.sqrt((dl / (l * s_l))**2 + (delta_c / (c * s_c))**2 + (delta_h / s_h)**2).round(DECIMAL_DIGITS)
         [delta_e, { dl: dl, da: da, db: db }]
       end
 
       def self.delta_for(color1, color2)
-        dl = color1.L - color2.L
-        da = color1.a - color2.a
-        db = color1.b - color2.b
+        dl = color1.model.L - color2.model.L
+        da = color1.model.a - color2.model.a
+        db = color1.model.b - color2.model.b
         [dl, da, db]
       end
 
       def self.magnitude_and_delta(color1, color2)
-        c1 = Math.sqrt(color1.a**2 + color1.b**2)
-        c2 = Math.sqrt(color2.a**2 + color2.b**2)
+        c1 = Math.sqrt(color1.model.a**2 + color1.model.b**2)
+        c2 = Math.sqrt(color2.model.a**2 + color2.model.b**2)
         delta_c = c1 - c2
         [c1, c2, delta_c]
       end
@@ -50,15 +49,18 @@ module ColorModule
         [s_c, factor_f]
       end
 
-      def self.factor_on_color1(color1)
+      def self.factors_on_color1(color1)
         factor_conversion = 180 / Math::PI # obtener en grados
-        factor_h = Math.atan2(color1.b, color1.a) * factor_conversion # obtener en grados
+        factor_h = Math.atan2(color1.model.b, color1.model.a) * factor_conversion # obtener en grados
         factor_h1 = factor_h >= 0 ? factor_h : (factor_h + 360)
-        if (164..345).cover?(factor_h)
-          0.56 + (0.2 * Math.cos((factor_h1 + 168) / factor_conversion)).abs
-        else
-          0.36 + (0.4 * Math.cos((factor_h1 + 35) / factor_conversion)).abs
-        end
+        s_l = color1.model.L < 16 ? 0.511 : (0.040975 * color1.model.L / (1.0 + 0.01765 * color1.model.L))
+        factor_t =
+          if (164..345).cover?(factor_h)
+            0.56 + (0.2 * Math.cos((factor_h1 + 168) / factor_conversion)).abs
+          else
+            0.36 + (0.4 * Math.cos((factor_h1 + 35) / factor_conversion)).abs
+          end
+        [s_l, factor_t]
       end
 
       def compare(first_color, second_color)

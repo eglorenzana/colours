@@ -1,5 +1,6 @@
 module ColorModule
   module Converters
+    # Implements the conversion methods from XYZ space for other spaces
     class XYZModelConverter < ColorModelConverter
       def to_xyz
         @model
