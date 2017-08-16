@@ -60,3 +60,5 @@ group :development, :test do
   # Ensure a clean state for testing
   gem 'database_cleaner', :require => false
 end
+
+gem 'active_model_serializers'

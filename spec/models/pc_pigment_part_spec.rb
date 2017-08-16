@@ -10,7 +10,7 @@ RSpec.describe PcPigmentPart, type: :model do
       end
     end
     context 'when has valid percentage, tint and physical_color' do
-      pigment = Pigment.create(name: 'Pigment X')      
+      pigment = Pigment.new(name: 'Pigment XYZYZ')      
       pc =  PhysicalColor.new(component_l: 50, component_a: 40, component_b: 30 )
       pc_pigment =  PcPigmentPart.new(pigment: pigment, physical_color: pc, percentage: 50)
       it 'saves the PcPigmentPart' do

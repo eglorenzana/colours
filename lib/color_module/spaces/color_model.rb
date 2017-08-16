@@ -1,16 +1,11 @@
 module ColorModule
-  module Spaces
-    class ColorModelError < StandardError
-      def initialize(params={})
-        default_params = {msg: 'Size of components and valid_ranges must be same'}.merge(params)
-        super(default_params.fetch(:msg, ''))
-      end
-    end  
+  module Spaces  
     class ColorModel
+      alias :read_attribute_for_serialization :send
       NUM_DEC_DIGITS =  4
       attr_reader :components
       attr_reader :model_name, :model_converter
-
+      
       def initialize(params)
         @components = Array.new
         begin
@@ -30,14 +25,17 @@ module ColorModule
         end
         @model_converter = params[:model_converter] || Converters::ColorModelConverter
       end
+      def active_model_serializer
+          ColorModule::Serializers::ColorModelSerializer
+      end    
 
       def assign_components(*values)
-        values =  values.flatten.first(@components.size)
+        values =  values.flatten.first(@components.size).compact
         values.each_with_index do |v, index|
           @components[index].value= v.round(NUM_DEC_DIGITS)
         end			
       end
-
+        
       def component_names
         @components.map(&:name)
       end
@@ -48,6 +46,10 @@ module ColorModule
 
       def resume
         @model_name.to_s + '  with components  ' + @components.map(&:resume).join(", ")
+      end
+      
+      def components_to_hash
+        @components.map(&:to_h).reduce(:merge)
       end
 
       def convert_to(model_to)
@@ -61,6 +63,7 @@ module ColorModule
         first_part  && ([@components, another_model.components].
           transpose.all?{|self_c, another_c| self_c.eql?(another_c) })
       end
+      
     private
       def self.meta_component_accessors(model_as_self)
         #puts "model_as_self  #{model_as_self} "

@@ -29,8 +29,6 @@ describe Partitionable do
     end
   end
   
-  
-  
   describe 'PartAssociationManager' do
     klass = PhysicalColor
     list = [:white_base_parts, :pigment_parts]

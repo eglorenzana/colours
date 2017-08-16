@@ -89,18 +89,9 @@ module Partitionable
   end
 
   class PartAssociationManager
+    extend AssociationData
     def self.build_managers(main_object_klass, *list)
-      association_data = Hash.new
-      list.flatten.each do |l|
-        name = l.to_s.split(/_part/).first.to_sym
-        assoc_klass = main_object_klass.reflect_on_association(l).klass
-        object_part_class = (assoc_klass.reflect_on_association(name)).klass
-        association_data[l] = {
-          klass: assoc_klass, 
-          object_part_klass: object_part_class, 
-          object_assoc_name: name
-          }
-      end
+      association_data = get_association_data(main_object_klass, list)
       managers =  Array.new
       association_data.each do |assoc_name, data|
         managers << self.new(main_object_klass, assoc_name, data)
@@ -113,11 +104,13 @@ module Partitionable
       managers.define_singleton_method(:get_manager) do |obj|
         select{|manager|  manager.accept_object?(obj)}.first
       end
-      
+      managers.define_singleton_method(:total_percentage) do
+        map(&:get_percentage).reduce(:+)
+      end      
       managers.define_singleton_method(:allow_add_percentage) do |quantity|
-        percentage = map{|manager| manager.get_percentage }.reduce(:+)
-        percentage + quantity <= 100
+        total_percentage + quantity <= 100
       end
+
       managers
     end
     attr_reader :assoc_name, :klass, :object_part_klass, :object_assoc_name
@@ -167,10 +160,10 @@ module Partitionable
       end
     end
     
-    private
     def get_collection_assoc
       main_instance.send(assoc_name)
     end
+    private
            
     def get_obj(assoc_obj)
       assoc_obj.send(object_assoc_name)

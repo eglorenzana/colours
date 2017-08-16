@@ -10,7 +10,7 @@ module ColorModule
         super(_params)
       end
       def assign_components(*values)
-        values =  values.flatten.first(@components.size)
+        values =  values.flatten.first(@components.size).compact
         values.each_with_index do |v, index|
           @components[index].value= v.round
         end			
